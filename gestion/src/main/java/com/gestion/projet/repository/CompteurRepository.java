@@ -5,12 +5,12 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.gestion.projet.models.User;
-
+import com.gestion.projet.models.Compteur;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long>{
+public interface CompteurRepository extends JpaRepository<Compteur, Long>{
 
-	Optional<User> findById(String id);
+	
+	Optional<Compteur> findByAnnee(int annee);
 
 }

@@ -31,57 +31,77 @@ public class UserController {
 	UserRepository repository;
 	
 	 @GetMapping("/users")
-	  public List<User> getAllComptes() {
-	    System.out.println("Get all Comptes...");
-	    List<User> Comptes = new ArrayList<>();
-	    repository.findAll().forEach(Comptes::add);
-	    return Comptes;
+	  public List<User> getAllUtilisateur() {
+	    System.out.println("Get all Utilisateur...");
+	 
+	    List<User> User = new ArrayList<>();
+	    repository.findAll().forEach(User::add);
+	 
+	    return User;
 	  }
 	
 	@GetMapping("/users/{id}")
-	public ResponseEntity<User> getCompteById(@PathVariable(value = "id") Long CompteId)
+	public ResponseEntity<User> getUtilisateurById(@PathVariable(value = "id") Long UserId)
 			throws ResourceNotFoundException {
-		User user = repository.findById(CompteId)
-				.orElseThrow(() -> new ResourceNotFoundException("Compte not found for this id :: " + CompteId));
-		return ResponseEntity.ok().body(user);
+		User User = repository.findById(UserId)
+				.orElseThrow(() -> new ResourceNotFoundException("Utilisateur not found for this id :: " + UserId));
+		return ResponseEntity.ok().body(User);
 	}
 
-	@PostMapping("/users")
-	public @Valid User createUser(@Valid @RequestBody User user) {
+	 
+	 @GetMapping("/users/5/{login}")
+	  public   ResponseEntity<User> getUtilisateurByLogin(@PathVariable String id) 
+		  throws ResourceNotFoundException {
+		 User  user = repository.findById(id)
+				  .orElseThrow(() -> new ResourceNotFoundException("Usernot found for this id : "));
+		   return ResponseEntity.ok().body(user);
+	  } 
 	
+	@PostMapping("/users")
+	public User createUtilisateur(@Valid @RequestBody User user) {
 		return repository.save(user);
-		 
 	}
+	
 
 	@DeleteMapping("/users/{id}")
-	public Map<String, Boolean> deleteUser(@PathVariable(value = "id") Long id)
+	public Map<String, Boolean> deleteUtilisateur(@PathVariable(value = "id") Long UserId)
 			throws ResourceNotFoundException {
-		User user = repository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("User not found  id :: " + id));
-		repository.delete(user);
+		User Utilisateur = repository.findById(UserId)
+				.orElseThrow(() -> new ResourceNotFoundException("Utilisateur not found  id :: " + UserId));
+
+		repository.delete(Utilisateur);
 		Map<String, Boolean> response = new HashMap<>();
 		response.put("deleted", Boolean.TRUE);
 		return response;
 	}
+	  
 	 
 	  @DeleteMapping("/users/delete")
-	  public ResponseEntity<String> deleteAllUsers() {
-	    System.out.println("Delete All Users...");
+	  public ResponseEntity<String> deleteAllUtilisateur() {
+	    System.out.println("Delete All Utilisateur...");
+	 
 	    repository.deleteAll();
-	    return new ResponseEntity<>("All Users have been deleted!", HttpStatus.OK);
+	 
+	    return new ResponseEntity<>("All Utilisateurs have been deleted!", HttpStatus.OK);
 	  }
 	 
+	
+
 	  @PutMapping("/users/{id}")
-	  public ResponseEntity<User> updateCompte(@PathVariable("id") long id, @RequestBody User user) {
-	    System.out.println("Update Compte with ID = " + id + "...");
+	  public ResponseEntity<User> updateUtilisateur(@PathVariable("id") long id, @RequestBody User Utilisateur) {
+	    System.out.println("Update Utilisateur with ID = " + id + "...");
+	 
 	    Optional<User> UserInfo = repository.findById(id);
+	 
 	    if (UserInfo.isPresent()) {
-	    	User user1= UserInfo.get();
-	    	user1.setUsername(user.getUsername());
-	      return new ResponseEntity<>(repository.save(user1), HttpStatus.OK);
+	    	User User = UserInfo.get();
+	    	User.setRole(User.getRole());
+	    	User.setUsername(User.getUsername());
+	    	User.setEmail(User.getEmail()); 
+	    	User.setPwd(User.getPwd());
+	      return new ResponseEntity<>(repository.save(User), HttpStatus.OK);
 	    } else {
 	      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	    }
 	  }
-
 }
